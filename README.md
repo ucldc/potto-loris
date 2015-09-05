@@ -1,8 +1,12 @@
 # Potto
 
-Cousin to [loris image server](https://github.com/loris-imageserver/loris),
+Alternative deployment for [loris IIF image server](https://github.com/loris-imageserver/loris),
 designed to run in [Amazon Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) 
 and serve images stored in Amazon Simple Storage Service (S3)
+
+The Loris `setup.py` is more like an application installer rather than something that should be run by `pip`.  (It wants specific users on the system to exist, for example.).
+
+To deploy to a beanstalk python app server, this uses `git` to grab the `#development` branch of the offical Loris, and then it subclasses (to override configuration style and to provide an S3 resolver) and monkey patches (to provide a stub for a healh check URL) loris.  `./deploy-version.sh` creates a `.zip` file of the application and deploys it to a beanstalk environment.
 
 ## Configuration
 
@@ -17,7 +21,7 @@ region as the bucket)
 
 ## deploy script
 
-`./deploy-version.sh` will need to be customized to your app.
+`./deploy-version.sh` will need to be customized to your app (setting correct application etc.).
 
 ## pictures of animals
 
