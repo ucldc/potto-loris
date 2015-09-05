@@ -1,4 +1,4 @@
-# Potto
+# Potto—Loris IIIF image server for AWS
 
 Alternative deployment for [loris IIF image server](https://github.com/loris-imageserver/loris),
 designed to run in [Amazon Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) 
@@ -19,9 +19,16 @@ Set these in the environment.
 `SOURCE_REGION` region in Amazon (you should usually run in the same
 region as the bucket)
 
-## deploy script
+## format support
+Currently all images in `SOURCE_ROOT` are assumed to be jpeg2000s.
 
+## deploy script
 `./deploy-version.sh` will need to be customized to your app (setting correct application etc.).
+
+## dev server
+`python loris2.wsgi.py` starts a wsgi server on `:8989` for local testing.  You should set up a
+special set of credentials in AWS IAM with readonly access to the bucket and path where the 
+jpeg 2000 files are kept.
 
 ## pictures of animals
 
