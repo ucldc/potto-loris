@@ -1,9 +1,12 @@
 # Potto
 
 Cousin to [loris image server](https://github.com/loris-imageserver/loris),
-designed to run in [Amazon Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/).
+designed to run in [Amazon Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) 
+and serve images stored in Amazon Simple Storage Service (S3)
 
 ## Configuration
+
+See [Configuring Python Containers with Elastic Beanstalk](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-container.html)
 
 Set these in the environment.
 
@@ -18,10 +21,12 @@ region as the bucket)
 
 ## pictures of animals
 
+### We are Potto
 <img width="511" alt="potto" src="https://cloud.githubusercontent.com/assets/227374/9700690/02418f4a-53c1-11e5-9e6b-1db47fd8caa3.png">
 
 [potto picture source](https://commons.wikimedia.org/wiki/File:PottoCincyZoo.jpg) CC BY 3.0 [Ltshears](https://commons.wikimedia.org/wiki/User:Ltshears)
 
+### Our cousin Loris
 <img width="261" alt="loris" src="https://cloud.githubusercontent.com/assets/227374/9700689/fcfebb02-53c0-11e5-8ab6-c96fb98ba126.png">
 
 [loris picture source](https://commons.wikimedia.org/wiki/File:Smit.Faces_of_Lorises.jpg)
