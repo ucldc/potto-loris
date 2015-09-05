@@ -5,6 +5,5 @@ configobj==5.0.0
 mock==1.0.1
 requests==2.5.1
 responses==0.3.0
-sh==1.11
 six==1.9.0
 wsgiref==0.1.2

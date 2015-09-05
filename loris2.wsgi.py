@@ -1,27 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from loris.webapp import create_app, Loris
 from decimal import getcontext
 from os.path import join
-import platform
 import logging
-import loris
-
+import sys
+import os
+import platform
 
 getcontext().prec = 25 # Decimal precision. This should be plenty.
 
-loris.webapp.logger = logging.getLogger('webapp')
-
 DIR = os.path.dirname(os.path.realpath(__file__))
 
+sys.path.append(join(DIR, 'loris'))
+import loris
+from loris.webapp import create_app, Loris
 
-
+loris.webapp.logger = logging.getLogger('webapp')
 
 application = loris.webapp.Loris(
     {
         'loris.Loris': {
             'tmp_dp': join(DIR, 'tmp'),
-            # 'www_dp': '/var/www/loris2',
+            'www_dp': join(DIR, 'www'),
             'enable_caching': True,
             'redirect_canonical_image_request': False,
             'redirect_id_slash_to_info': True
@@ -37,7 +37,8 @@ application = loris.webapp.Loris(
         'resolver': {
             'impl': 's3resolver.S3Resolver',
             'cache_root': join(DIR, 'cache'),
-            'source_root': 'ucldc-nuxeo-ref-images',
+            'source_root': os.getenv('SOURCE_ROOT'),
+            'source_region': os.getenv('SOURCE_REGION'),
         },
         'img.ImageCache': {
             'cache_dp': join(DIR, 'cache-loris2'),
