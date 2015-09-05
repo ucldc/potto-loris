@@ -2,7 +2,7 @@
 
 Alternative deployment for [loris IIF image server](https://github.com/loris-imageserver/loris),
 designed to run in [Amazon Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) 
-and serve images stored in Amazon Simple Storage Service (S3)
+and serve images stored in [Amazon Simple Storage Service (S3)](https://aws.amazon.com/s3/)
 
 The Loris `setup.py` is more like an application installer rather than something that should be run by `pip`.  (It wants specific users on the system to exist, for example.).
 
