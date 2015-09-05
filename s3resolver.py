@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from loris.resolver import _AbstractResolver, ResolverException
 from urllib import unquote
+import urlparse
 from os.path import join, exists, isfile
 import boto
 import logging
@@ -14,26 +15,25 @@ class S3Resolver(_AbstractResolver):
     The config dictionary MUST contain
      * `cache_root`, which is the absolute path to the directory where source images
         should be cached.
-     * `source_root`, the root directory for source images.
+     * `source_root`, the s3 root for source images.
+     * `source_region`, the Amazon region of the s3 bucket
     '''
     def __init__(self, config):
+        ''' setup object and validate '''
         super(S3Resolver, self).__init__(config)
+        self.cache_root = self.config.get('cache_root')
+        source_root = self.config.get('source_root')
+        self.source_region = self.config.get('source_region')
+        assert source_root, 'please set SOURCE_ROOT in environment'
+        assert self.source_region, 'please set SOURCE_REGION in environment'
+        scheme, self.s3bucket, self.prefix, ___, ___ = urlparse.urlsplit(
+            source_root
+        )
+        assert scheme == 's3', '{0} not an s3 url'.format(source_root)
 
-        if 'cache_root' in self.config:
-            self.cache_root = self.config['cache_root']
-        else:
-            message = 'Server Side Error: Configuration incomplete and cannot resolve. Missing setting for cache_root.'
-            logger.error(message)
-            raise ResolverException(500, message)
-
-        if 'source_root' in self.config:
-            self.s3bucket = self.config['source_root']
-        else:
-            message = 'Server Side Error: Configuration incomplete and cannot resolve. Missing setting for s3bucket.'
-            logger.error(message)
-            raise ResolverException(500, message)
 
     def is_resolvable(self, ident):
+        '''does this file even exist?'''
         ident = unquote(ident)
         local_fp = join(self.cache_root, ident)
         if exists(local_fp):
@@ -48,7 +48,7 @@ class S3Resolver(_AbstractResolver):
                 logger.error(e)
                 return False
 
-            if bucket.get_key(ident):
+            if bucket.get_key(u'{0}{1}'.format(self.prefix, ident)):
                 return True
             else:
                 logger.debug('AWS key %s does not exist' % (ident))
@@ -56,6 +56,7 @@ class S3Resolver(_AbstractResolver):
 
 
     def resolve(self, ident):
+        '''get me the file'''
         ident = unquote(ident)
         local_fp = join(self.cache_root, ident)
         logger.debug('local_fp: %s' % (local_fp))
@@ -67,7 +68,7 @@ class S3Resolver(_AbstractResolver):
         else:
             # get image from S3
             bucketname = self.s3bucket 
-            keyname = ident
+            keyname = '{0}{1}'.format(self.prefix, ident)
             logger.debug('Getting img from AWS S3. bucketname, keyname: %s, %s' % (bucketname, keyname))    
             
             s3 = boto.connect_s3()
