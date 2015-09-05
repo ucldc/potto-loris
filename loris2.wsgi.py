@@ -6,6 +6,10 @@ import logging
 import sys
 import os
 import platform
+from werkzeug.wrappers import Response
+from werkzeug.exceptions import InternalServerError
+
+''' subclass loris application for AWS S3 and Elastic Beanstalk '''
 
 getcontext().prec = 25 # Decimal precision. This should be plenty.
 
@@ -66,6 +70,34 @@ application = loris.webapp.Loris(
     }
 )
 
+
+def status_check():
+    ''' do some sort of health check here '''
+    return True
+
+# set up for monkeypatch
+stock_route = application.route
+
+
+def new_route(request):
+    ''' monkeypatch the url router for health check '''
+    ____, ident, ____, ____ = application._dissect_uri(request)
+    okay = status_check()
+    if ident == '' and okay:
+        # looks good
+        return Response('potto-loris status okay',
+                        content_type='text/plain')
+    if ident == '' and not okay:
+        # looks like things ain't working
+        return InternalServerError(
+            response=Response('500 potto-loris health check failed',
+                              content_type='text/plain')
+        )
+    # pass control back to loris router
+    return stock_route(request)
+
+# complete the monkey patch
+application.route = new_route
 
 
 if __name__ == "__main__":
