@@ -25,7 +25,7 @@ application = loris.webapp.Loris(
     {
         'loris.Loris': {
             'tmp_dp': join(DIR, 'tmp'),
-            'www_dp': join(DIR, 'www'),
+            'www_dp': join(DIR, 'loris', 'www'),
             'enable_caching': True,
             'redirect_canonical_image_request': False,
             'redirect_id_slash_to_info': True
@@ -82,17 +82,18 @@ stock_route = application.route
 def new_route(request):
     ''' monkeypatch the url router for health check '''
     ____, ident, ____, ____ = application._dissect_uri(request)
-    okay = status_check()
-    if ident == '' and okay:
-        # looks good
-        return Response('potto-loris status okay',
-                        content_type='text/plain')
-    if ident == '' and not okay:
-        # looks like things ain't working
-        return InternalServerError(
-            response=Response('500 potto-loris health check failed',
-                              content_type='text/plain')
-        )
+    if ident == '':
+        # "home" page doubles as health check
+        if status_check():
+            # looks good
+            return Response('potto-loris status okay',
+                            content_type='text/plain')
+        else:
+            # looks like things ain't working
+            return InternalServerError(
+                response=Response('500 potto-loris health check failed',
+                                  content_type='text/plain')
+            )
     # pass control back to loris router
     return stock_route(request)
 

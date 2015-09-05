@@ -12,7 +12,7 @@ set -o errexit   ## set -e : exit the script if any statement returns a non-true
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )" # http://stackoverflow.com/questions/59895
 cd $DIR
 
-for dir in tmp www log cache cache-loris2 cache-links
+for dir in tmp log cache cache-loris2 cache-links
 do
   mkdir -p "$DIR/$dir"
 done
