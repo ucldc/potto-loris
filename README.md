@@ -3,6 +3,25 @@
 Cousin to [loris image server](https://github.com/loris-imageserver/loris),
 designed to run in [Amazon Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/).
 
+## Configuration
+
+Set these in the environment.
+
+`SOURCE_ROOT` s3:// URL to s3 bucket and prefix where jp2s are stored
+
+`SOURCE_REGION` region in Amazon (you should usually run in the same
+region as the bucket)
+
+## deploy script
+
+`./deploy-version.sh` will need to be customized to your app.
+
+## pictures of animals
+
+[potto picture source](https://commons.wikimedia.org/wiki/File:PottoCincyZoo.jpg) CC BY 3.0 [Ltshears](https://commons.wikimedia.org/wiki/User:Ltshears)
+
+[loris picture source](https://commons.wikimedia.org/wiki/File:Smit.Faces_of_Lorises.jpg)
+
 ## License
 
 Copyright © 2015, Regents of the University of California
