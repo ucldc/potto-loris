@@ -29,6 +29,10 @@ BUCKET=xtf.dsc.cdlib.org
 REGION=us-west-2
 APPNAME=potto-loris
 
+if ![ -e $DIR/loris]; then
+  git clone https://github.com/loris-imageserver/loris.git --depth=1
+fi
+
 # package app and upload
 zip $ZIP -r .ebextensions/ \
   loris/*.txt \

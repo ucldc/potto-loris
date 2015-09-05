@@ -1,7 +1,9 @@
 # Potto
 
-Cousin to loris image server, designed to run in Amazon Elastic
-Beanstalk.
+Cousin to [loris image server](https://github.com/loris-imageserver/loris),
+designed to run in [Amazon Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/).
+
+## License
 
 Copyright © 2015, Regents of the University of California
 
