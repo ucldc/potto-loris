@@ -3,7 +3,7 @@
 set -e
 
 REGION='us-west-2'
-APPNAME='ucldc-iiif-west'
+APPNAME='potto-loris'
 
 echo ""
 echo "'--version-label's (last 20 version names already used)"
