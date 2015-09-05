@@ -1,42 +1,50 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from loris.webapp import create_app, Loris
 from decimal import getcontext
-
+from os.path import join
+import platform
+import logging
 import loris
 
-import logging
+
 getcontext().prec = 25 # Decimal precision. This should be plenty.
 
 loris.webapp.logger = logging.getLogger('webapp')
 
+DIR = os.path.dirname(os.path.realpath(__file__))
+
+
+
+
 application = loris.webapp.Loris(
     {
         'loris.Loris': {
-            'tmp_dp': '/tmp/loris2',
-            'www_dp': '/var/www/loris2',
+            'tmp_dp': join(DIR, 'tmp'),
+            # 'www_dp': '/var/www/loris2',
             'enable_caching': True,
             'redirect_canonical_image_request': False,
             'redirect_id_slash_to_info': True
         },
         'logging': {
             'log_to': 'file',
-            'log_level': 'DEBUG',
-            'log_dir': '/var/log/loris2',
+            'log_level': 'ERROR',
+            'log_dir': join(DIR, 'log'),
             'max_size': 5242880,
             'max_backups': 5,
             'format': '%(asctime)s (%(name)s) [%(levelname)s]: %(message)s'
         },
         'resolver': {
             'impl': 's3resolver.S3Resolver',
-            'cache_root': '/usr/local/share/images/loris',
+            'cache_root': join(DIR, 'cache'),
             'source_root': 'ucldc-nuxeo-ref-images',
-            'src_img_root': '/usr/local/share/images'
         },
         'img.ImageCache': {
-            'cache_dp': '/var/cache/loris2',
-            'cache_links': 'var/cache/loris/links'
+            'cache_dp': join(DIR, 'cache-loris2'),
+            'cache_links': join(DIR, 'cache-links')
         },
         'img_info.InfoCache': {
-            'cache_dp': '/var/cache/loris2'
+            'cache_dp': join(DIR, 'cache-loris2'),
         },
         'transforms': {
             'dither_bitonal_images': False,
@@ -45,9 +53,9 @@ application = loris.webapp.Loris(
             'tif': {'impl': 'TIF_Transformer'},
             'jp2': {
                 'impl': 'KakaduJP2Transformer',
-                'tmp_dp': '/tmp/loris2',
-                'kdu_expand': '/usr/local/bin/kdu_expand',
-                'kdu_libs': '/usr/local/lib/libkdu.so',
+                'tmp_dp': join(DIR, 'tmp'),
+                'kdu_expand': join(DIR, 'loris/bin', platform.system(), 'x86_64/kdu_expand'),
+                'kdu_libs': join(DIR, 'loris/lib/Linux/x86_64/libkdu_v74R.so'), 
                 'num_threads': '4',
                 'mkfifo': '/usr/bin/mkfifo',
                 'map_profile_to_srgb': False,

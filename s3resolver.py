@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from loris.resolver import _AbstractResolver, ResolverException
 from urllib import unquote
 from os.path import join, exists, isfile
