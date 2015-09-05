@@ -18,7 +18,11 @@ region as the bucket)
 
 ## pictures of animals
 
+<img width="511" alt="potto" src="https://cloud.githubusercontent.com/assets/227374/9700690/02418f4a-53c1-11e5-9e6b-1db47fd8caa3.png">
+
 [potto picture source](https://commons.wikimedia.org/wiki/File:PottoCincyZoo.jpg) CC BY 3.0 [Ltshears](https://commons.wikimedia.org/wiki/User:Ltshears)
+
+<img width="261" alt="loris" src="https://cloud.githubusercontent.com/assets/227374/9700689/fcfebb02-53c0-11e5-8ab6-c96fb98ba126.png">
 
 [loris picture source](https://commons.wikimedia.org/wiki/File:Smit.Faces_of_Lorises.jpg)
 
