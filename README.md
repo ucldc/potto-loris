@@ -16,9 +16,6 @@ Set these in the environment.
 
 `SOURCE_ROOT` s3:// URL to s3 bucket and prefix where jp2s are stored
 
-`SOURCE_REGION` region in Amazon (you should usually run in the same
-region as the bucket)
-
 ## format support
 Currently all images in `SOURCE_ROOT` are assumed to be jpeg2000s.
 

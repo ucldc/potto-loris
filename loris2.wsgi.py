@@ -42,7 +42,6 @@ application = loris.webapp.Loris(
             'impl': 's3resolver.S3Resolver',
             'cache_root': join(DIR, 'cache'),
             'source_root': os.getenv('SOURCE_ROOT'),
-            'source_region': os.getenv('SOURCE_REGION'),
         },
         'img.ImageCache': {
             'cache_dp': join(DIR, 'cache-loris2'),
@@ -60,7 +59,7 @@ application = loris.webapp.Loris(
                 'impl': 'KakaduJP2Transformer',
                 'tmp_dp': join(DIR, 'tmp'),
                 'kdu_expand': join(DIR, 'loris/bin', platform.system(), 'x86_64/kdu_expand'),
-                'kdu_libs': join(DIR, 'loris/lib/Linux/x86_64/libkdu_v74R.so'),
+                'kdu_libs': join(DIR, 'loris/lib/Linux/x86_64'),
                 'num_threads': '4',
                 'mkfifo': '/usr/bin/mkfifo',
                 'map_profile_to_srgb': False,

@@ -16,16 +16,13 @@ class S3Resolver(_AbstractResolver):
      * `cache_root`, which is the absolute path to the directory where source images
         should be cached.
      * `source_root`, the s3 root for source images.
-     * `source_region`, the Amazon region of the s3 bucket
     '''
     def __init__(self, config):
         ''' setup object and validate '''
         super(S3Resolver, self).__init__(config)
         self.cache_root = self.config.get('cache_root')
         source_root = self.config.get('source_root')
-        self.source_region = self.config.get('source_region')
         assert source_root, 'please set SOURCE_ROOT in environment'
-        assert self.source_region, 'please set SOURCE_REGION in environment'
         scheme, self.s3bucket, self.prefix, ___, ___ = urlparse.urlsplit(
             source_root
         )
