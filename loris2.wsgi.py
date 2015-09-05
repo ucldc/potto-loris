@@ -11,13 +11,13 @@ from werkzeug.exceptions import InternalServerError
 
 ''' subclass loris application for AWS S3 and Elastic Beanstalk '''
 
-getcontext().prec = 25 # Decimal precision. This should be plenty.
+getcontext().prec = 25  # Decimal precision. This should be plenty.
 
 DIR = os.path.dirname(os.path.realpath(__file__))
 
 sys.path.append(join(DIR, 'loris'))
 import loris
-from loris.webapp import create_app, Loris
+import loris.webapp
 
 loris.webapp.logger = logging.getLogger('webapp')
 
@@ -60,7 +60,7 @@ application = loris.webapp.Loris(
                 'impl': 'KakaduJP2Transformer',
                 'tmp_dp': join(DIR, 'tmp'),
                 'kdu_expand': join(DIR, 'loris/bin', platform.system(), 'x86_64/kdu_expand'),
-                'kdu_libs': join(DIR, 'loris/lib/Linux/x86_64/libkdu_v74R.so'), 
+                'kdu_libs': join(DIR, 'loris/lib/Linux/x86_64/libkdu_v74R.so'),
                 'num_threads': '4',
                 'mkfifo': '/usr/bin/mkfifo',
                 'map_profile_to_srgb': False,

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from loris.resolver import _AbstractResolver, ResolverException
+from loris.resolver import _AbstractResolver
 from urllib import unquote
 import urlparse
-from os.path import join, exists, isfile
+from os.path import join, exists
 import boto
 import logging
 
