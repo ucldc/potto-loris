@@ -80,14 +80,31 @@ def status_check():
     ''' do some sort of health check here '''
     return True
 
+
+def simple_dissect_uri(request):
+    # we can use a much simpler uri dissector that does not have to call
+    # `is_resolvable` (testing for existance is an http request for us)
+    request_type = 'info'
+    if request.path.endswith('default.jpg'):
+        request_type = 'image'
+    parts = request.path.strip('/').split('/', 1)
+    ident = parts[0]
+    params = parts[1] if len(parts) == 2 else ''
+    return (
+      u'{0}{1}'.format(request.host_url, ident),
+      ident,
+      params,
+      request_type,
+    )
+
+application._dissect_uri = simple_dissect_uri
+
 # set up for monkeypatch
 stock_route = application.route
 
-
 def new_route(request):
     ''' monkeypatch the url router for health check '''
-    ____, ident, ____, ____ = application._dissect_uri(request)
-    if ident == '':
+    if request.path == "/":
         # "home" page doubles as health check
         if status_check():
             # looks good
