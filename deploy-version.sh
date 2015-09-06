@@ -29,7 +29,7 @@ BUCKET=xtf.dsc.cdlib.org
 REGION=us-west-2
 APPNAME=potto-loris
 
-if [[ ! -e $DIR/loris ]]; then
+if ! [[ -d "loris" ]]; then
   git clone https://github.com/loris-imageserver/loris.git --depth=1
 fi
 
