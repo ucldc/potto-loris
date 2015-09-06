@@ -6,6 +6,8 @@ import logging
 import sys
 import os
 import platform
+import getpass
+import grp
 from werkzeug.wrappers import Response
 from werkzeug.exceptions import InternalServerError
 
@@ -13,9 +15,9 @@ from werkzeug.exceptions import InternalServerError
 
 getcontext().prec = 25  # Decimal precision. This should be plenty.
 
-DIR = os.path.dirname(os.path.realpath(__file__))
+DIR = os.getenv('APP_WORK', os.path.dirname(os.path.realpath(__file__)))
 
-sys.path.append(join(DIR, 'loris'))
+sys.path.append(join(os.path.dirname(os.path.realpath(__file__)), 'loris'))
 import loris
 import loris.webapp
 
@@ -26,6 +28,11 @@ log.setLevel(os.getenv('LOG_LEVEL','INFO'))
 log.addHandler(handler)
 
 loris.webapp.logger = log
+
+group =  grp.getgrgid(os.getgid()).gr_name
+
+log.debug(u'user={0} group={1}'.format(getpass.getuser(), group))
+log.debug(u'uid={0} gid={1}'.format(os.getuid(), os.getgid()))
 
 application = loris.webapp.Loris(
     {
