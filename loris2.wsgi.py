@@ -101,6 +101,7 @@ application._dissect_uri = simple_dissect_uri
 
 # set up for monkeypatch
 stock_route = application.route
+unwrapped_get_info = application.get_info
 
 def new_route(request):
     ''' monkeypatch the url router for health check '''
@@ -119,8 +120,16 @@ def new_route(request):
     # pass control back to loris router
     return stock_route(request)
 
+def wrapped_get_info(request, ident, base_uri):
+    # don't fail silently
+    r = unwrapped_get_info(request, ident, base_uri)
+    if not r.content_length:
+        return InternalServerError('empty json')
+    return r
+
 # complete the monkey patch
 application.route = new_route
+application.get_info = wrapped_get_info
 
 
 if __name__ == "__main__":
