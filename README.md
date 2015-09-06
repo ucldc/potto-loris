@@ -16,6 +16,8 @@ Set these in the environment.
 
 `SOURCE_ROOT` s3:// URL to s3 bucket and prefix where jp2s are stored
 
+`LOG_LEVEL` default `INFO` of CRITICAL | ERROR | WARNING | INFO	| DEBUG	| NOTSET -- output goes to `/var/log/httpd/error_log` which gets shipped by default when you request logs from beanstalk.
+
 ## format support
 Currently all images in `SOURCE_ROOT` are assumed to be jpeg2000s.
 

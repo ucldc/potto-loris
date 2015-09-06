@@ -19,7 +19,13 @@ sys.path.append(join(DIR, 'loris'))
 import loris
 import loris.webapp
 
-loris.webapp.logger = logging.getLogger('webapp')
+# set up logging http://stackoverflow.com/a/14152283/1763984
+handler = logging.StreamHandler(stream=sys.stderr)
+log = logging.getLogger('webapp')
+log.setLevel(os.getenv('LOG_LEVEL','INFO'))
+log.addHandler(handler)
+
+loris.webapp.logger = log
 
 application = loris.webapp.Loris(
     {
