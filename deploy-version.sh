@@ -40,7 +40,7 @@ zip $ZIP -r .ebextensions/ \
   loris/bin/ \
   loris/lib/ \
   requirements.txt \
-  setup.sh \
+  beanstalk_cache_clean.sh \
   loris2.wsgi.py \
   s3resolver.py
 aws s3 cp $ZIP s3://$BUCKET/$DIR/$ZIP
