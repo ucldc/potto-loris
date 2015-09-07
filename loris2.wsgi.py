@@ -15,9 +15,11 @@ from werkzeug.exceptions import InternalServerError
 
 getcontext().prec = 25  # Decimal precision. This should be plenty.
 
-DIR = os.getenv('APP_WORK', os.path.dirname(os.path.realpath(__file__)))
+this_dir = os.path.dirname(os.path.realpath(__file__))
+DIR = os.getenv('APP_WORK', this_dir)
 
-sys.path.append(join(os.path.dirname(os.path.realpath(__file__)), 'loris'))
+sys.path.append(join(this_dir, 'loris'))
+
 import loris
 import loris.webapp
 
@@ -71,8 +73,8 @@ application = loris.webapp.Loris(
             'jp2': {
                 'impl': 'KakaduJP2Transformer',
                 'tmp_dp': join(DIR, 'tmp'),
-                'kdu_expand': join(DIR, 'loris/bin', platform.system(), 'x86_64/kdu_expand'),
-                'kdu_libs': join(DIR, 'loris/lib/Linux/x86_64'),
+                'kdu_expand': join(this_dir, 'loris/bin', platform.system(), 'x86_64/kdu_expand'),
+                'kdu_libs': join(this_dir, 'loris/lib/Linux/x86_64'),
                 'num_threads': '4',
                 'mkfifo': '/usr/bin/mkfifo',
                 'map_profile_to_srgb': False,
