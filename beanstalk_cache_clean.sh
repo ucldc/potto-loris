@@ -39,9 +39,15 @@ if [ $usage -lt $REDUCE_TO ]
 fi
 
 delete_total=0
-oldest_file=$(find -type f -printf '%As\n' | sort | head -n 1)  # http://superuser.com/a/552606
+# expect SIGPIPE
+set +o pipefail
+oldest_file=$(find $APP_WORK -type f -printf '%As\n' | sort | head -n 1)  # http://superuser.com/a/552606
+set -o pipefail
+
 max_age=$(( ( $(date +"%s") - oldest_file) / 86400 ))  # http://unix.stackexchange.com/a/24636/40198
 start_size=$usage
+
+APP_WORK=/home/wsgi
 
 while [ "$usage" -gt "$REDUCE_TO" ] && [ "$max_age" -ge 1 ]
   do
@@ -61,7 +67,7 @@ while [ "$usage" -gt "$REDUCE_TO" ] && [ "$max_age" -ge 1 ]
     # points to rather than the link itself (unless the symbolic  link
     # is broken).
     # should the links be deleted first in the above find?
-    find -L $APP_WORK -type l -delete
+    find -L $APP_WORK -mindepth 2 -type l -delete
 
     # command will exit 1 when max_age goes to zero
     # x=1; let x-=1; echo $? ==> 1
