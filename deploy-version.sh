@@ -39,9 +39,10 @@ zip $ZIP -r .ebextensions/ \
   loris/loris/*.py \
   loris/bin/ \
   loris/lib/ \
-  requirements.txt \
   beanstalk_cache_clean.sh \
+  crontab \
   loris2.wsgi.py \
+  requirements.txt \
   s3resolver.py
 aws s3 cp $ZIP s3://$BUCKET/$DIR/$ZIP
 aws elasticbeanstalk create-application-version \
