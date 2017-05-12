@@ -23,11 +23,11 @@ fi
 
 set -u
 
-ZIP=potto-loris-ebs.zip
 DIR=potto-loris-beanstalk
-BUCKET=xtf.dsc.cdlib.org
+BUCKET=ucldc-private-files
 REGION=us-west-2
 APPNAME=potto-loris
+ZIP=potto-loris-$1.zip
 
 if ! [[ -d "loris" ]]; then
   git clone https://github.com/loris-imageserver/loris.git --depth=1
