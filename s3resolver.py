@@ -40,12 +40,12 @@ class S3Resolver(_AbstractResolver):
             s3 = boto.connect_s3()
 
             try:
-                bucket = s3.get_bucket(self.s3bucket)
+                bucket = s3.get_bucket(self.s3bucket, validate=False)
             except boto.exception.S3ResponseError as e:
                 logger.error(e)
                 return False
 
-            if bucket.get_key(u'{0}{1}'.format(self.prefix, ident)):
+            if bucket.get_key(u'{0}{1}'.format(self.prefix, ident), validate=False):
                 return True
             else:
                 logger.debug('AWS key %s does not exist' % (ident))
@@ -69,8 +69,8 @@ class S3Resolver(_AbstractResolver):
             logger.debug('Getting img from AWS S3. bucketname, keyname: %s, %s' % (bucketname, keyname))    
             
             s3 = boto.connect_s3()
-            bucket = s3.get_bucket(bucketname)
-            key = bucket.get_key(keyname)
+            bucket = s3.get_bucket(bucketname, validate=False)
+            key = bucket.get_key(keyname, validate=False)
             try:
                 res = key.get_contents_to_filename(local_fp)
             except boto.exception.S3ResponseError as e:
@@ -81,7 +81,7 @@ class S3Resolver(_AbstractResolver):
             return (local_fp, format)
 
 """
-Copyright © 2015, Regents of the University of California
+Copyright © 2017, Regents of the University of California
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
