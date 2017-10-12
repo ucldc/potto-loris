@@ -20,9 +20,10 @@ ionice -c3 -p$$
 
 # On this scheme for putting this in beanstalk, all of the 
 # loris work files end up in `APP_WORK` directory
-
+APP_WORK=/home/wsgi
 LOG="$APP_WORK/log/cache_clean.$(date +"%F")"
 touch $LOG  # otherwise, empty log directory might get deleted below
+
 
 current_usage () {
   pcent=$(df --output=pcent $APP_WORK | tail -1)
@@ -47,7 +48,6 @@ set -o pipefail
 max_age=$(( ( $(date +"%s") - oldest_file) / 86400 ))  # http://unix.stackexchange.com/a/24636/40198
 start_size=$usage
 
-APP_WORK=/home/wsgi
 
 while [ "$usage" -gt "$REDUCE_TO" ] && [ "$max_age" -ge 1 ]
   do
