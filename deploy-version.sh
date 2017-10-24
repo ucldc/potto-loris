@@ -39,6 +39,7 @@ zip $ZIP -r .ebextensions/ \
   loris/loris/*.py \
   loris/bin/ \
   loris/lib/ \
+  loris/www/icons/loris-icon.png \
   beanstalk_cache_clean.sh \
   crontab \
   loris2.wsgi.py \
