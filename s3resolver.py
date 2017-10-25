@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from loris.resolver import _AbstractResolver
+from loris.loris_exception import ResolverException
 from urllib import unquote
 import urlparse
 from os.path import join, exists
@@ -45,7 +46,9 @@ class S3Resolver(_AbstractResolver):
                 logger.error(e)
                 return False
 
-            if bucket.get_key(u'{0}{1}'.format(self.prefix, ident), validate=False):
+
+
+            if bucket.get_key(u'{0}{1}'.format(self.prefix, ident), ):
                 return True
             else:
                 logger.debug('AWS key %s does not exist' % (ident))
@@ -74,7 +77,9 @@ class S3Resolver(_AbstractResolver):
             try:
                 res = key.get_contents_to_filename(local_fp)
             except boto.exception.S3ResponseError as e:
-                logger.warn(e)
+                message = 'Source image not found for identifier: %s.' % (ident,)
+                logger.warn(message)
+                raise ResolverException(404, message)
             format = 'jp2' #FIXME
             logger.debug('src format %s' % (format,))
 
