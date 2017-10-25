@@ -41,13 +41,14 @@ application = loris.webapp.Loris(
         'loris.Loris': {
             'tmp_dp': join(DIR, 'tmp'),
             'www_dp': join(DIR, 'loris', 'www'),
+            # 'enable_caching': False,
             'enable_caching': True,
             'redirect_canonical_image_request': False,
             'redirect_id_slash_to_info': True
         },
         'logging': {
             'log_to': 'file',
-            'log_level': 'ERROR',
+            'log_level': os.getenv('LOG_LEVEL','ERROR'),
             'log_dir': join(DIR, 'log'),
             'max_size': 5242880,
             'max_backups': 5,
@@ -112,6 +113,7 @@ application._dissect_uri = simple_dissect_uri
 stock_route = application.route
 unwrapped_get_info = application.get_info
 
+
 def new_route(request):
     ''' monkeypatch the url router for health check '''
     if request.path == "/":
@@ -128,6 +130,7 @@ def new_route(request):
             )
     # pass control back to loris router
     return stock_route(request)
+
 
 def wrapped_get_info(request, ident, base_uri):
     # don't fail silently
