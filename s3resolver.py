@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from loris.resolver import _AbstractResolver
 from loris.loris_exception import ResolverException
-from urllib import unquote
-import urlparse
+from urllib.parse import unquote
+import urllib.parse
 from os.path import join, exists
 import boto
 import logging
@@ -24,7 +24,7 @@ class S3Resolver(_AbstractResolver):
         self.cache_root = self.config.get('cache_root')
         source_root = self.config.get('source_root')
         assert source_root, 'please set SOURCE_ROOT in environment'
-        scheme, self.s3bucket, self.prefix, ___, ___ = urlparse.urlsplit(
+        scheme, self.s3bucket, self.prefix, ___, ___ = urllib.parse.urlsplit(
             source_root
         )
         assert scheme == 's3', '{0} not an s3 url'.format(source_root)
@@ -48,7 +48,7 @@ class S3Resolver(_AbstractResolver):
 
 
 
-            if bucket.get_key(u'{0}{1}'.format(self.prefix, ident), ):
+            if bucket.get_key('{0}{1}'.format(self.prefix, ident), ):
                 return True
             else:
                 logger.debug('AWS key %s does not exist' % (ident))

@@ -1,9 +1,9 @@
-Pillow==2.9.0
-Werkzeug==0.10.4
+pillow>=6.2.0
+werkzeug>=0.15.3
 boto==2.38.0
 configobj==5.0.0
 mock==1.0.1
-requests==2.5.1
+requests>=2.20.0
 responses==0.3.0
 six==1.9.0
-wsgiref==0.1.2
+attrs==19.3.0

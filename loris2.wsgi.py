@@ -33,8 +33,8 @@ loris.webapp.logger = log
 
 group =  grp.getgrgid(os.getgid()).gr_name
 
-log.debug(u'user={0} group={1}'.format(getpass.getuser(), group))
-log.debug(u'uid={0} gid={1}'.format(os.getuid(), os.getgid()))
+log.debug('user={0} group={1}'.format(getpass.getuser(), group))
+log.debug('uid={0} gid={1}'.format(os.getuid(), os.getgid()))
 
 application = loris.webapp.Loris(
     {
@@ -101,7 +101,7 @@ def simple_dissect_uri(request):
     ident = parts[0]
     params = parts[1] if len(parts) == 2 else ''
     return (
-      u'{0}{1}'.format(request.host_url, ident),
+      '{0}{1}'.format(request.host_url, ident),
       ident,
       params,
       request_type,
@@ -147,7 +147,7 @@ application.get_info = wrapped_get_info
 if __name__ == "__main__":
     from wsgiref.simple_server import make_server
     httpd = make_server('', 8989, application)
-    print "Serving on port 8989..."
+    print("Serving on port 8989...")
     httpd.serve_forever()
 
 """
