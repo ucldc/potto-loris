@@ -44,7 +44,8 @@ application = loris.webapp.Loris(
             # 'enable_caching': False,
             'enable_caching': True,
             'redirect_canonical_image_request': False,
-            'redirect_id_slash_to_info': True
+            'redirect_id_slash_to_info': True,
+            'proxy_path': os.getenv('PROXY_PATH', None),
         },
         'logging': {
             'log_to': 'file',
