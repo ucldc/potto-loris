@@ -4,8 +4,10 @@ from loris.loris_exception import ResolverException
 from urllib.parse import unquote
 import urllib.parse
 from os.path import join, exists
-import boto
+import boto3
+import botocore
 import logging
+from loris.img_info import ImageInfo
 
 logger = logging.getLogger('webapp')
 
@@ -38,11 +40,11 @@ class S3Resolver(_AbstractResolver):
             return True
         else:
             # check that we can get to this object on S3
-            s3 = boto.connect_s3()
+            s3 = boto3.resource('s3')
 
             try:
                 bucket = s3.get_bucket(self.s3bucket, validate=False)
-            except boto.exception.S3ResponseError as e:
+            except boto3.exception.S3ResponseError as e:
                 logger.error(e)
                 return False
 
@@ -55,38 +57,35 @@ class S3Resolver(_AbstractResolver):
                 return False
 
 
-    def resolve(self, ident):
-        '''get me the file'''
+    #def resolve(self, ident):
+    def resolve(self, app, ident, base_uri):
         ident = unquote(ident)
         local_fp = join(self.cache_root, ident)
         logger.debug('local_fp: %s' % (local_fp))
  
         if exists(local_fp):
-            format = 'jp2' # FIXME
+            format_ = 'jp2' # FIXME
             logger.debug('src image from local disk: %s' % (local_fp,))
-            return (local_fp, format)
         else:
             # get image from S3
             bucketname = self.s3bucket 
-            keyname = '{0}{1}'.format(self.prefix, ident)
+            keyname = '{0}{1}'.format(self.prefix, ident).strip("/")
             logger.debug('Getting img from AWS S3. bucketname, keyname: %s, %s' % (bucketname, keyname))    
-            
-            s3 = boto.connect_s3()
-            bucket = s3.get_bucket(bucketname, validate=False)
-            key = bucket.get_key(keyname, validate=False)
+
+            s3 = boto3.client('s3')
             try:
-                res = key.get_contents_to_filename(local_fp)
-            except boto.exception.S3ResponseError as e:
+                s3.download_file(bucketname, keyname, local_fp)
+            except botocore.exceptions.ClientError as e:
                 message = 'Source image not found for identifier: %s.' % (ident,)
-                logger.warn(message)
+                logger.warn(e, message)
                 raise ResolverException(404, message)
-            format = 'jp2' #FIXME
+            format_ = 'jp2' #FIXME
             logger.debug('src format %s' % (format,))
 
-            return (local_fp, format)
+        return ImageInfo(app=app, src_img_fp=local_fp, src_format=format_, auth_rules={})
 
 """
-Copyright © 2017, Regents of the University of California
+Copyright © 2020, Regents of the University of California
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:

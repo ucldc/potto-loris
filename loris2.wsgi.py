@@ -75,6 +75,7 @@ application = loris.webapp.Loris(
                 'impl': 'KakaduJP2Transformer',
                 'tmp_dp': join(DIR, 'tmp'),
                 'kdu_expand': join(this_dir, 'loris/bin', platform.system(), 'x86_64/kdu_expand'),
+                # 'kdu_expand': '/usr/local/bin/kdu_expand',
                 'kdu_libs': join(this_dir, 'loris/lib/Linux/x86_64'),
                 'num_threads': '4',
                 'mkfifo': '/usr/bin/mkfifo',
@@ -90,24 +91,6 @@ def status_check():
     ''' do some sort of health check here '''
     return True
 
-
-def simple_dissect_uri(request):
-    # we can use a much simpler uri dissector that does not have to call
-    # `is_resolvable` (testing for existance is an http request for us)
-    request_type = 'info'
-    if request.path.endswith('default.jpg'):
-        request_type = 'image'
-    parts = request.path.strip('/').split('/', 1)
-    ident = parts[0]
-    params = parts[1] if len(parts) == 2 else ''
-    return (
-      '{0}{1}'.format(request.host_url, ident),
-      ident,
-      params,
-      request_type,
-    )
-
-application._dissect_uri = simple_dissect_uri
 
 # set up for monkeypatch
 stock_route = application.route
@@ -151,7 +134,7 @@ if __name__ == "__main__":
     httpd.serve_forever()
 
 """
-Copyright © 2015, Regents of the University of California
+Copyright © 2020, Regents of the University of California
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
