@@ -33,8 +33,8 @@ loris.webapp.logger = log
 
 group =  grp.getgrgid(os.getgid()).gr_name
 
-log.debug(u'user={0} group={1}'.format(getpass.getuser(), group))
-log.debug(u'uid={0} gid={1}'.format(os.getuid(), os.getgid()))
+log.debug('user={0} group={1}'.format(getpass.getuser(), group))
+log.debug('uid={0} gid={1}'.format(os.getuid(), os.getgid()))
 
 application = loris.webapp.Loris(
     {
@@ -44,7 +44,8 @@ application = loris.webapp.Loris(
             # 'enable_caching': False,
             'enable_caching': True,
             'redirect_canonical_image_request': False,
-            'redirect_id_slash_to_info': True
+            'redirect_id_slash_to_info': True,
+            'proxy_path': os.getenv('PROXY_PATH', None),
         },
         'logging': {
             'log_to': 'file',
@@ -75,6 +76,7 @@ application = loris.webapp.Loris(
                 'impl': 'KakaduJP2Transformer',
                 'tmp_dp': join(DIR, 'tmp'),
                 'kdu_expand': join(this_dir, 'loris/bin', platform.system(), 'x86_64/kdu_expand'),
+                # 'kdu_expand': '/usr/local/bin/kdu_expand',
                 'kdu_libs': join(this_dir, 'loris/lib/Linux/x86_64'),
                 'num_threads': '4',
                 'mkfifo': '/usr/bin/mkfifo',
@@ -90,24 +92,6 @@ def status_check():
     ''' do some sort of health check here '''
     return True
 
-
-def simple_dissect_uri(request):
-    # we can use a much simpler uri dissector that does not have to call
-    # `is_resolvable` (testing for existance is an http request for us)
-    request_type = 'info'
-    if request.path.endswith('default.jpg'):
-        request_type = 'image'
-    parts = request.path.strip('/').split('/', 1)
-    ident = parts[0]
-    params = parts[1] if len(parts) == 2 else ''
-    return (
-      u'{0}{1}'.format(request.host_url, ident),
-      ident,
-      params,
-      request_type,
-    )
-
-application._dissect_uri = simple_dissect_uri
 
 # set up for monkeypatch
 stock_route = application.route
@@ -147,11 +131,11 @@ application.get_info = wrapped_get_info
 if __name__ == "__main__":
     from wsgiref.simple_server import make_server
     httpd = make_server('', 8989, application)
-    print "Serving on port 8989..."
+    print("Serving on port 8989...")
     httpd.serve_forever()
 
 """
-Copyright © 2015, Regents of the University of California
+Copyright © 2020, Regents of the University of California
 All rights reserved.
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
