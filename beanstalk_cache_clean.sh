@@ -49,7 +49,8 @@ max_age=$(( ( $(date +"%s") - oldest_file) / 86400 ))  # http://unix.stackexchan
 start_size=$usage
 
 
-while [ "$usage" -gt "$REDUCE_TO" ] && [ "$max_age" -ge 1 ]
+#while [ "$usage" -gt "$REDUCE_TO" ] && [ "$max_age" -ge 1 ]
+while [ "$usage" -gt "$REDUCE_TO" ]
   do
     # files. loop (instead of -delete) so that we can keep count
     for f in $(find $APP_WORK -type f -atime +$max_age)
