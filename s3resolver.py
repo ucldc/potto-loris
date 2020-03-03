@@ -40,21 +40,17 @@ class S3Resolver(_AbstractResolver):
             return True
         else:
             # check that we can get to this object on S3
-            s3 = boto3.resource('s3')
-
-            try:
-                bucket = s3.get_bucket(self.s3bucket, validate=False)
-            except boto3.exception.S3ResponseError as e:
-                logger.error(e)
-                return False
-
-
-
-            if bucket.get_key('{0}{1}'.format(self.prefix, ident), ):
-                return True
-            else:
-                logger.debug('AWS key %s does not exist' % (ident))
-                return False
+            #
+            bucketname = self.s3bucket
+            keyname = '{0}{1}'.format(self.prefix, ident).strip("/")
+            s3 = boto3.client('s3')
+            response = s3.list_objects_v2(
+                Bucket=bucketname,
+                Prefix=keyname,
+            )
+            for obj in response.get('Contents', []):
+                if obj['Key'] == keyname:
+                    return obj['Size']
 
 
     #def resolve(self, ident):
