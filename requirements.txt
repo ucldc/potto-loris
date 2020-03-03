@@ -1,6 +1,7 @@
 pillow>=6.2.0
 werkzeug>=0.15.3
-boto==2.38.0
+boto3==1.12.7
+botocore==1.15.7
 configobj==5.0.0
 mock==1.0.1
 requests>=2.20.0
