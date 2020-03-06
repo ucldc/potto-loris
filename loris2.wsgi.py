@@ -17,6 +17,7 @@ getcontext().prec = 25  # Decimal precision. This should be plenty.
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 DIR = os.getenv('APP_WORK', this_dir)
+CURRENT = os.getenv('APP_CURRENT', this_dir)
 
 sys.path.append(join(this_dir, 'loris'))
 
@@ -40,7 +41,7 @@ application = loris.webapp.Loris(
     {
         'loris.Loris': {
             'tmp_dp': join(DIR, 'tmp'),
-            'www_dp': join(DIR, 'loris', 'www'),
+            'www_dp': join(CURRENT, 'loris', 'www'),
             # 'enable_caching': False,
             'enable_caching': True,
             'redirect_canonical_image_request': False,
