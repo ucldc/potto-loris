@@ -126,6 +126,9 @@ def wrapped_get_info(request, ident, base_uri):
 
 # complete the monkey patch
 application.route = new_route
+# NOTE: this get_info monkey patch causes every other request to return a 500
+# this is what's been happening in production for years though...
+# I guess it's not an issue because of cloudfront caching.
 application.get_info = wrapped_get_info
 
 
