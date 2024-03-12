@@ -43,9 +43,7 @@ class S3Resolver(_AbstractResolver):
             # check that we can get to this object on S3
             #
             bucketname = self.s3bucket
-            ident_parts = ident.split('---')
-            keyname = '/'.join(ident_parts)
-            keyname = f"{self.prefix.strip('/')}/{keyname}"
+            keyname = '{0}{1}'.format(self.prefix, ident).strip("/")
             s3 = boto3.client('s3')
             response = s3.list_objects_v2(
                 Bucket=bucketname,
@@ -66,11 +64,18 @@ class S3Resolver(_AbstractResolver):
             format_ = 'jp2' # FIXME
             logger.debug('src image from local disk: %s' % (local_fp,))
         else:
+            # create subdirectory
+            local_dir_parts = local_fp.split('/')[:-1]
+            local_dir = '/'.join(local_dir_parts)
+            logger.debug(f"Creating local_dir: {local_dir}")
+            try:
+                os.makedirs(local_dir, exist_ok=True)
+            except OSError as exc:
+                raise ConfigError("Error creating local_dir %s: %r" % (local_dir, exc))
+
             # get image from S3
             bucketname = self.s3bucket
-            ident_parts = ident.split('---')
-            keyname = '/'.join(ident_parts)
-            keyname = f"{self.prefix.strip('/')}/{keyname}"
+            keyname = f"{self.prefix.strip('/')}/{ident.strip('/')}"
             logger.debug('Getting img from AWS S3. bucketname, keyname: %s, %s' % (bucketname, keyname))    
 
             s3 = boto3.client('s3')
