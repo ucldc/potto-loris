@@ -30,6 +30,7 @@ class S3Resolver(_AbstractResolver):
         scheme, self.s3bucket, self.prefix, ___, ___ = urllib.parse.urlsplit(
             source_root
         )
+        self.prefix = self.prefix.strip("/")
         assert scheme == 's3', '{0} not an s3 url'.format(source_root)
 
 
@@ -75,7 +76,10 @@ class S3Resolver(_AbstractResolver):
 
             # get image from S3
             bucketname = self.s3bucket
-            keyname = f"{self.prefix.strip('/')}/{ident.strip('/')}"
+            if ident.startswith("iiif/"):
+                keyname = f"{self.prefix}/{ident[5:]}"
+            else:
+                keyname = f"{self.prefix}/{ident}"
             logger.debug('Getting img from AWS S3. bucketname, keyname: %s, %s' % (bucketname, keyname))    
 
             s3 = boto3.client('s3')
