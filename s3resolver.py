@@ -44,7 +44,11 @@ class S3Resolver(_AbstractResolver):
             # check that we can get to this object on S3
             #
             bucketname = self.s3bucket
-            keyname = '{0}{1}'.format(self.prefix, ident).strip("/")
+            if ident.startswith("iiif/"):
+                keyname = f"{self.prefix}/{ident[5:]}"
+            else:
+                keyname = f"{self.prefix}/{ident}"
+
             s3 = boto3.client('s3')
             response = s3.list_objects_v2(
                 Bucket=bucketname,
