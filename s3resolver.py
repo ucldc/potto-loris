@@ -2,7 +2,7 @@
 import os
 from loris.resolver import _AbstractResolver
 from loris.loris_exception import ResolverException
-from urllib.parse import unquote
+from urllib.parse import unquote, unquote_plus
 import urllib.parse
 from os.path import join, exists
 import boto3
@@ -36,18 +36,18 @@ class S3Resolver(_AbstractResolver):
 
     def is_resolvable(self, ident):
         '''does this file even exist?'''
-        ident = unquote(ident)
-        local_fp = join(self.cache_root, ident)
+        local_fp = join(self.cache_root, unquote(ident))
         if exists(local_fp):
             return True
         else:
             # check that we can get to this object on S3
             #
             bucketname = self.s3bucket
-            if ident.startswith("iiif/"):
-                keyname = f"{self.prefix}/{ident[5:]}"
+            key = unquote_plus(ident)
+            if key.startswith("iiif/"):
+                keyname = f"{self.prefix}/{key[5:]}"
             else:
-                keyname = f"{self.prefix}/{ident}"
+                keyname = f"{self.prefix}/{key}"
 
             s3 = boto3.client('s3')
             response = s3.list_objects_v2(
@@ -61,8 +61,7 @@ class S3Resolver(_AbstractResolver):
 
     #def resolve(self, ident):
     def resolve(self, app, ident, base_uri):
-        ident = unquote(ident)
-        local_fp = join(self.cache_root, ident)
+        local_fp = join(self.cache_root, unquote(ident))
         logger.debug('local_fp: %s' % (local_fp))
  
         if exists(local_fp):
@@ -80,10 +79,11 @@ class S3Resolver(_AbstractResolver):
 
             # get image from S3
             bucketname = self.s3bucket
-            if ident.startswith("iiif/"):
-                keyname = f"{self.prefix}/{ident[5:]}"
+            key = unquote_plus(ident)
+            if key.startswith("iiif/"):
+                keyname = f"{self.prefix}/{key[5:]}"
             else:
-                keyname = f"{self.prefix}/{ident}"
+                keyname = f"{self.prefix}/{key}"
             logger.debug('Getting img from AWS S3. bucketname, keyname: %s, %s' % (bucketname, keyname))    
 
             s3 = boto3.client('s3')
