@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
 from loris.resolver import _AbstractResolver
 from loris.loris_exception import ResolverException
-from urllib.parse import unquote
+from urllib.parse import unquote, unquote_plus
 import urllib.parse
 from os.path import join, exists
 import boto3
@@ -29,20 +30,25 @@ class S3Resolver(_AbstractResolver):
         scheme, self.s3bucket, self.prefix, ___, ___ = urllib.parse.urlsplit(
             source_root
         )
+        self.prefix = self.prefix.strip("/")
         assert scheme == 's3', '{0} not an s3 url'.format(source_root)
 
 
     def is_resolvable(self, ident):
         '''does this file even exist?'''
-        ident = unquote(ident)
-        local_fp = join(self.cache_root, ident)
+        local_fp = join(self.cache_root, unquote(ident))
         if exists(local_fp):
             return True
         else:
             # check that we can get to this object on S3
             #
             bucketname = self.s3bucket
-            keyname = '{0}{1}'.format(self.prefix, ident).strip("/")
+            key = unquote_plus(ident)
+            if key.startswith("iiif/"):
+                keyname = f"{self.prefix}/{key[5:]}"
+            else:
+                keyname = f"{self.prefix}/{key}"
+
             s3 = boto3.client('s3')
             response = s3.list_objects_v2(
                 Bucket=bucketname,
@@ -55,17 +61,29 @@ class S3Resolver(_AbstractResolver):
 
     #def resolve(self, ident):
     def resolve(self, app, ident, base_uri):
-        ident = unquote(ident)
-        local_fp = join(self.cache_root, ident)
+        local_fp = join(self.cache_root, unquote(ident))
         logger.debug('local_fp: %s' % (local_fp))
  
         if exists(local_fp):
             format_ = 'jp2' # FIXME
             logger.debug('src image from local disk: %s' % (local_fp,))
         else:
+            # create subdirectory
+            local_dir_parts = local_fp.split('/')[:-1]
+            local_dir = '/'.join(local_dir_parts)
+            logger.debug(f"Creating local_dir: {local_dir}")
+            try:
+                os.makedirs(local_dir, exist_ok=True)
+            except OSError as exc:
+                raise ConfigError("Error creating local_dir %s: %r" % (local_dir, exc))
+
             # get image from S3
-            bucketname = self.s3bucket 
-            keyname = '{0}{1}'.format(self.prefix, ident).strip("/")
+            bucketname = self.s3bucket
+            key = unquote_plus(ident)
+            if key.startswith("iiif/"):
+                keyname = f"{self.prefix}/{key[5:]}"
+            else:
+                keyname = f"{self.prefix}/{key}"
             logger.debug('Getting img from AWS S3. bucketname, keyname: %s, %s' % (bucketname, keyname))    
 
             s3 = boto3.client('s3')
