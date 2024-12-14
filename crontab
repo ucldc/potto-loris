@@ -1,2 +1,2 @@
-0 */4 * * * /usr/bin/flock -n /tmp/app_cache_clean.lockfile /var/app/current/beanstalk_cache_clean.sh
+0 */4 * * * /usr/bin/flock -n /tmp/app_cache_clean.lockfile /app/beanstalk_cache_clean.sh
 * * * * * /usr/bin/flock -n /tmp/bad_symlink.lockfile /bin/find /home/wsgi/cache-loris2 -type l -! -exec test -e {} \; -delete  # http://unix.stackexchange.com/a/38691/40198

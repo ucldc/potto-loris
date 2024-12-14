@@ -1,7 +1,8 @@
-loris/
+
 ve27
 *.pyc
 *.zip
+.env
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

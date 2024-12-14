@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  potto-loris:
+    build:
+      context: .
+    env_file: .env
+    ports:
+      - "8000:8000"  # Map Gunicorn's port to the local machine
+    # volumes:
+    #   - .:/app  # Mount the current directory into the container for development purposes
