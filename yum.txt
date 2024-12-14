@@ -1,7 +1,0 @@
-libjpeg-turbo-devel
-freetype-devel
-zlib-devel
-lcms2-devel
-lcms2-utils
-libtiff-devel
-libwebp-devel
