@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - TAG=`git describe --tags --abbrev=0`
+      - REPO="$AWS_ACCOUNT_ID.dkr.ecr.us-west-2.amazonaws.com"
+      - NEW_IMAGE="$REPO/potto-loris:$TAG"
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $REPO
+      - docker build -t potto-loris:$TAG .
+      - docker tag potto-loris:$TAG $NEW_IMAGE
+      - docker push $NEW_IMAGE
+  post_build:
+    commands:
+      - TASK_FAMILY="potto-loris-prod"
+      - TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY")
+      - NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq --arg IMAGE "$NEW_IMAGE" '.taskDefinition | .containerDefinitions[0].image = $IMAGE | del(.taskDefinitionArn) | del(.revision) | del(.status) | del(.requiresAttributes) | del(.compatibilities)')
+      - aws ecs register-task-definition --cli-input-json "$NEW_TASK_DEFINITION"
+      - aws ecs update-service --cluster calisphere-prod --service potto-loris-prod-service --force-new-deployment
