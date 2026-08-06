@@ -2,7 +2,7 @@
 # run the container: docker run -it iiif
 
 # Use an official Python runtime as the base image
-FROM public.ecr.aws/docker/library/python:3.8.20
+FROM public.ecr.aws/docker/library/python:3.11.15
 
 # Set environment variables to avoid interactive prompts during package installation
 ENV PYTHONDONTWRITEBYTECODE=1
